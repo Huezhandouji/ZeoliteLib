@@ -1,0 +1,9 @@
+name: ZeoliteLib
+version: '${version}'
+
+main: com.zeoliteLib.ZeoliteLibPlugin
+paper-plugin-loader: com.zeoliteLib.ZeoliteLibPluginLoader
+api-version: '1.21.11'
+load: POSTWORLD
+
+authors: [ HueZhandouji ]
