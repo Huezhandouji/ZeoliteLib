@@ -28,7 +28,6 @@ public class ItemInteractionDefinition {
         this.dragListeners = dragHandlers;
     }
 
-    @ApiStatus.Internal
     public static Builder createBuilder(String id) {
         return new Builder(id);
     }

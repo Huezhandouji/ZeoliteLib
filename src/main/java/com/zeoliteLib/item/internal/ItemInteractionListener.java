@@ -54,12 +54,12 @@ public class ItemInteractionListener implements Listener {
             return;
         }
         switch (hand){
-            case EquipmentSlot.HAND -> handleInteract(event, ItemInteractionHand.MAIN_HAND);
-            case EquipmentSlot.OFF_HAND -> handleInteract(event, ItemInteractionHand.OFF_HAND);
+            case EquipmentSlot.HAND -> handleInteract(event, EquipmentSlot.HAND);
+            case EquipmentSlot.OFF_HAND -> handleInteract(event, EquipmentSlot.OFF_HAND);
         }
     }
 
-    private void handleInteract(final PlayerInteractEvent event, final ItemInteractionHand hand) {
+    private void handleInteract(final PlayerInteractEvent event, final EquipmentSlot hand) {
         UUID pid = event.getPlayer().getUniqueId();
         int currentTick = plugin.getServer().getCurrentTick();
         Action action = event.getAction();
@@ -85,7 +85,7 @@ public class ItemInteractionListener implements Listener {
         //PHYSICAL(踩压力板/绊线等)不是玩家点击,不转发
     }
 
-    private void publishInteraction(final PlayerInteractEvent event, final ItemInteractionType type, final ItemInteractionHand hand) {
+    private void publishInteraction(final PlayerInteractEvent event, final ItemInteractionType type, final EquipmentSlot hand) {
         ZeoliteItemInteractionEvent zEvent = ZeoliteEventBus.get().publish(
                 new ZeoliteItemInteractionEvent(event, type, hand));
         if(zEvent.isCanceled()) {

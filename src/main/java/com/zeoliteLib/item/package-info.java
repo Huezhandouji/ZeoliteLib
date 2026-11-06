@@ -6,7 +6,7 @@
  * 公共类名、方法面以 03 规格的落地任务为准。
  *
  * <p><b>依赖方向（06 §4）</b>：只依赖 internal 骨架层（{@code ModuleBootstrap} / {@code LazyModuleHost}）；
- * 可被外部插件与 menu 模块公共面消费；不依赖 menu / dialog。
+ * 可被外部插件与 inventoryMenu 模块公共面消费；不依赖 inventoryMenu / dialog。
  *
  * <p><b>入口模式（06 §3.2 模板）</b>：唯一管理器类 {@code InteractiveItemManager}
  * 的静态 {@code get()} 经 {@code LazyModuleHost} 懒初始化——首调才构造、注册监听器并打日志；

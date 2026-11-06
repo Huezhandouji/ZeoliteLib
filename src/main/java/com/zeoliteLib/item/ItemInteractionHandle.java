@@ -17,6 +17,10 @@ public class ItemInteractionHandle {
         this.definition = definition;
     }
 
+    public static ItemInteractionHandle create(ItemInteractionDefinition definition){
+        return new ItemInteractionHandle(ItemInteractionManager.get(), definition);
+    }
+
     public ItemInteractionDefinition getDefinition() {
         return definition;
     }

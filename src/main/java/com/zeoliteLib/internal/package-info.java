@@ -12,7 +12,7 @@
  * </ul>
  *
  * <p>依赖规则（06 §4）：骨架层谁也不 import，保持宿主中立；
- * 各模块（item / menu / dialog）只允许使用上述共享件。
+ * 各模块（item / inventoryMenu / dialog）只允许使用上述共享件。
  *
  * <p><b>零兼容承诺（06 §6）</b>：本包对外部插件不承诺任何兼容性——
  * import internal 类视为违规使用，升级碎掉是预期行为。
