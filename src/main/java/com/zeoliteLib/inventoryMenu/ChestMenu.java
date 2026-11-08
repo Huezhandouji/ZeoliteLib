@@ -1,6 +1,7 @@
 package com.zeoliteLib.inventoryMenu;
 
 import com.zeoliteLib.inventoryMenu.internal.MenuHolder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 
@@ -16,7 +17,7 @@ public class ChestMenu extends InventoryMenu<ChestMenu> {
     /** 行数；0 = 未确定。 */
     private int rows;
 
-    public ChestMenu(String title) {
+    public ChestMenu(Component title) {
         super(title);
     }
 
@@ -57,6 +58,6 @@ public class ChestMenu extends InventoryMenu<ChestMenu> {
 
     @Override
     protected Inventory createContainer(MenuHolder holder) {
-        return Bukkit.createInventory(holder, rows * SLOTS_PER_ROW, titleComponent());
+        return Bukkit.createInventory(holder, rows * SLOTS_PER_ROW, getTitle());
     }
 }

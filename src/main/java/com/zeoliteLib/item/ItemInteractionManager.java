@@ -79,11 +79,18 @@ public final class ItemInteractionManager {
 
 
     public void onItemInteractionZEvent(ZeoliteItemInteractionEvent zEvent) {
-        ItemInteractionDefinition definition = resolveDefinition(zEvent.getItem());
-        if(definition == null) return;
+        //换手(SWAP_HAND)双手物品都参与:getItem()=换手前主手,getOffHandItem()=换手前副手,
+        //任一带交互标记即分发到对应定义,同一定义只分发一次;其余类型只看 getItem()
+        LinkedHashSet<ItemInteractionDefinition> definitions = new LinkedHashSet<>();
+        if(zEvent.getType() == ItemInteractionType.SWAP_HAND) {
+            addResolvedDefinition(zEvent.getOffHandItem(), definitions);
+        }
+        addResolvedDefinition(zEvent.getItem(), definitions);
 
-        for(Consumer<ZeoliteItemInteractionEvent> listener : definition.getItemInteractionListeners()){
-            listener.accept(zEvent);
+        for(ItemInteractionDefinition definition : definitions){
+            for(Consumer<ZeoliteItemInteractionEvent> listener : definition.getItemInteractionListeners()){
+                listener.accept(zEvent);
+            }
         }
     }
 

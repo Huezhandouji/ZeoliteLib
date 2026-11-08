@@ -53,6 +53,9 @@ public class ItemInteractionDefinition {
                 addInventoryClickListener(new InventoryMoveBlocker());
                 //拖拽同样能把物品挪出原格,单独拦截
                 addInventoryDragListener(new InventoryDragBlocker());
+                //背包内 F 换手走 SWAP_OFFHAND 点击,已被 InventoryMoveBlocker 拦截;
+                //背包外 F 换手发布为 SWAP_HAND 物品交互事件,须在物品交互通道拦截
+                addItemInteractionListener(new SwapHandBlocker());
             }
 
             return new ItemInteractionDefinition(id, itemInteractionListeners, clickListeners, dragListeners);
@@ -143,6 +146,16 @@ public class ItemInteractionDefinition {
         @Override
         public void accept(ZeoliteInventoryDragEvent zEvent) {
             zEvent.setCanceled(true);
+        }
+    }
+
+    //拦截背包外的 F 换手(分发到本类即说明参与换手的物品带本定义的标记)
+    private static final class SwapHandBlocker implements Consumer<ZeoliteItemInteractionEvent> {
+        @Override
+        public void accept(ZeoliteItemInteractionEvent zEvent) {
+            if(zEvent.getType() == ItemInteractionType.SWAP_HAND){
+                zEvent.setCanceled(true);
+            }
         }
     }
 }

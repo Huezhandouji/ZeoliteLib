@@ -51,8 +51,8 @@ createInventory()                      // 模板方法，每次全新装配
    `self()` 返回 `M`，保证链式调用的静态类型不收窄（否则 `FooMenu m = new FooMenu(..).onBuild(..)`
    编译不过）。
 2. **三个抽象成员**：
-   - `createContainer(MenuHolder)`：创建空容器（不含物品与回调）；标题经 `titleComponent()`
-     转换（Paper 已过时 String 标题重载，legacy § 颜色码）。
+   - `createContainer(MenuHolder)`：创建空容器（不含物品与回调）；标题为 Component，
+     用 `getTitle()` 取得后直接传入（Paper 已过时 String 标题重载）。
    - `getRowWidth()`：布局每行字符数（箱子 9、漏斗 5、铁砧 3）。
    - `getSize()`：容器总槽位数；未完成必要配置时返回 0，`createInventory()` 拒绝。
 3. **两个钩子**（基类默认实现，按需覆写）：
@@ -162,7 +162,7 @@ Bukkit InventoryCloseEvent / PlayerDropItemEvent / PlayerItemHeldEvent / PlayerS
 
 ```java
 // 标准箱子：字符布局 + 静态/动态物品 + 点击回调
-new ChestMenu("§8商店")
+new ChestMenu(Component.text("商店", NamedTextColor.DARK_GRAY))
     .map("#########",
          "#  A  B #",
          "#########")
@@ -173,13 +173,13 @@ new ChestMenu("§8商店")
     .open(player);
 
 // 漏斗：固定 5 格
-new HopperMenu("§8快速选择")
+new HopperMenu(Component.text("快速选择", NamedTextColor.DARK_GRAY))
     .map("ABCD ")
     .set('A', new ItemStack(Material.DIAMOND_SWORD), e -> setMode(e.getPlayer(), "战斗"))
     .open(player);
 
 // 放行模式：handLocked(false) + 按槽位绑定（可储存菜单形态）
-new ChestMenu("§8存入")
+new ChestMenu(Component.text("存入", NamedTextColor.DARK_GRAY))
     .handLocked(false)
     .map("#########",
          "#  ...  #",

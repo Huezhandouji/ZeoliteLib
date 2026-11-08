@@ -1,16 +1,15 @@
 package com.zeoliteLib.item.internal;
 
 import com.zeoliteLib.internal.ZeoliteEventBus;
-import com.zeoliteLib.item.ItemInteractionHand;
 import com.zeoliteLib.item.ItemInteractionType;
 import com.zeoliteLib.item.event.ZeoliteItemInteractionEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus;
@@ -88,6 +87,15 @@ public class ItemInteractionListener implements Listener {
     private void publishInteraction(final PlayerInteractEvent event, final ItemInteractionType type, final EquipmentSlot hand) {
         ZeoliteItemInteractionEvent zEvent = ZeoliteEventBus.get().publish(
                 new ZeoliteItemInteractionEvent(event, type, hand));
+        if(zEvent.isCanceled()) {
+            event.setCancelled(true);
+        }
+    }
+
+    //背包外 F 键换手(背包内 F 走 SWAP_OFFHAND 点击,归 InventoryInteractionListener 管)
+    @EventHandler
+    public void onPlayerSwapHandItems(final PlayerSwapHandItemsEvent event) {
+        ZeoliteItemInteractionEvent zEvent = ZeoliteEventBus.get().publish(new ZeoliteItemInteractionEvent(event));
         if(zEvent.isCanceled()) {
             event.setCancelled(true);
         }

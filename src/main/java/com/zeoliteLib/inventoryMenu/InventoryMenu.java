@@ -4,7 +4,7 @@ import com.zeoliteLib.inventoryMenu.internal.MenuHolder;
 import com.zeoliteLib.item.event.ZeoliteInventoryClickEvent;
 import com.zeoliteLib.item.event.ZeoliteInventoryDragEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -26,7 +26,7 @@ public abstract class InventoryMenu<M extends InventoryMenu<M>> {
     /** 空格 = 空槽位，也作"无字符"的返回值。 */
     private static final char EMPTY = ' ';
 
-    private String title;
+    private Component title;
     private boolean handLocked = true;
 
     /** 字符布局，每行恰好 getRowWidth() 个字符。 */
@@ -51,14 +51,14 @@ public abstract class InventoryMenu<M extends InventoryMenu<M>> {
     /** 最近一次 createInventory() 的产物。 */
     private Inventory lastInventory;
 
-    /** @param title 标题，legacy § 颜色码按颜色渲染 */
-    protected InventoryMenu(String title) {
-        this.title = title == null ? "" : title;
+    /** @param title 标题（Component），null 视为空标题 */
+    protected InventoryMenu(Component title) {
+        this.title = title == null ? Component.empty() : title;
     }
 
     //-------- 子类扩展契约 --------
 
-    /** 创建空容器（不含物品与回调）：箱子按尺寸、漏斗/铁砧按 InventoryType；标题经 {@link #titleComponent()} 转换。 */
+    /** 创建空容器（不含物品与回调）：箱子按尺寸、漏斗/铁砧按 InventoryType；标题用 {@link #getTitle()} 取 Component 传入。 */
     protected abstract Inventory createContainer(MenuHolder holder);
 
     /** 布局每行字符数：箱子 9、漏斗 5、铁砧 3。 */
@@ -76,15 +76,10 @@ public abstract class InventoryMenu<M extends InventoryMenu<M>> {
     protected void onMapApplied(int rowCount) {
     }
 
-    /** 标题转 Component（legacy § 渲染）——Paper 已过时 String 标题重载。 */
-    protected Component titleComponent() {
-        return LegacyComponentSerializer.legacySection().deserialize(title);
-    }
-
     /** 配置冻结守卫：子类自有配置方法应先调本方法。 */
     protected void checkNotBuilt() {
         if (built) {
-            throw new IllegalStateException("menu already built, config frozen; create a new instance to reconfigure (title: " + title + ")");
+            throw new IllegalStateException("menu already built, config frozen; create a new instance to reconfigure (title: " + titleText() + ")");
         }
     }
 
@@ -96,14 +91,14 @@ public abstract class InventoryMenu<M extends InventoryMenu<M>> {
 
     //-------- 基础配置 --------
 
-    /** 设置标题（legacy § 颜色码）。 */
-    public M title(String title) {
+    /** 设置标题；null 视为空标题。 */
+    public M title(Component title) {
         checkNotBuilt();
-        this.title = title == null ? "" : title;
+        this.title = title == null ? Component.empty() : title;
         return self();
     }
 
-    public String getTitle() {
+    public Component getTitle() {
         return title;
     }
 
@@ -300,11 +295,11 @@ public abstract class InventoryMenu<M extends InventoryMenu<M>> {
      */
     public Inventory createInventory() {
         if (getSize() <= 0) {
-            throw new IllegalStateException("container size undetermined, complete setup before createInventory (title: " + title + ")");
+            throw new IllegalStateException("container size undetermined, complete setup before createInventory (title: " + titleText() + ")");
         }
         if (layout.size() * getRowWidth() > getSize()) {
             throw new IllegalStateException("layout of " + layout.size() + " rows = " + (layout.size() * getRowWidth())
-                + " slots exceeds container size " + getSize() + " (title: " + title + ")");
+                + " slots exceeds container size " + getSize() + " (title: " + titleText() + ")");
         }
         MenuHolder holder = createMenuHolder();
         Inventory inventory = createContainer(holder);
@@ -426,8 +421,13 @@ public abstract class InventoryMenu<M extends InventoryMenu<M>> {
 
     private void checkSlotInRange(int slot, int size) {
         if (slot >= size) {
-            throw new IndexOutOfBoundsException("slot " + slot + " exceeds menu size " + size + " (title: " + title + ")");
+            throw new IndexOutOfBoundsException("slot " + slot + " exceeds menu size " + size + " (title: " + titleText() + ")");
         }
+    }
+
+    //异常信息里标题以纯文本呈现，避免 Component#toString 的结构化噪音
+    private String titleText() {
+        return PlainTextComponentSerializer.plainText().serialize(title);
     }
 
     private void checkBindChar(char bind) {

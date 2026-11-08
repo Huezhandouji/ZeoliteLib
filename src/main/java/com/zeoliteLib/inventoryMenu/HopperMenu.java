@@ -1,6 +1,7 @@
 package com.zeoliteLib.inventoryMenu;
 
 import com.zeoliteLib.inventoryMenu.internal.MenuHolder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -13,7 +14,7 @@ public class HopperMenu extends InventoryMenu<HopperMenu> {
 
     private static final int SIZE = 5;
 
-    public HopperMenu(String title) {
+    public HopperMenu(Component title) {
         super(title);
     }
 
@@ -31,6 +32,6 @@ public class HopperMenu extends InventoryMenu<HopperMenu> {
 
     @Override
     protected Inventory createContainer(MenuHolder holder) {
-        return Bukkit.createInventory(holder, InventoryType.HOPPER, titleComponent());
+        return Bukkit.createInventory(holder, InventoryType.HOPPER, getTitle());
     }
 }

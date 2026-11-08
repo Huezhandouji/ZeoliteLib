@@ -1,9 +1,6 @@
 package com.zeoliteLib;
 
-import com.zeoliteLib.api.ZeoliteLibApi;
-import com.zeoliteLib.api.ZeoliteLibApiImpl;
 import com.zeoliteLib.internal.ModuleBootstrap;
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ZeoliteLibPlugin extends JavaPlugin {
@@ -12,13 +9,6 @@ public final class ZeoliteLibPlugin extends JavaPlugin {
     public void onEnable() {
         // 宿主纪律（06 §5）：enable 唯一动作 = 登记插件实例；零监听器、零模块资源
         ModuleBootstrap.install(this);
-
-        getServer().getServicesManager().register(
-                ZeoliteLibApi.class,
-                new ZeoliteLibApiImpl(),
-                this,
-                ServicePriority.Normal
-        );
     }
 
     @Override

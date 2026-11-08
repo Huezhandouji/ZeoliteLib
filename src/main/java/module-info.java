@@ -18,9 +18,12 @@ module com.zeoliteLib {
     // 虽也在传递图中，但 jar 无 Automatic-Module-Name、只落在类路径，requires 不到
     requires com.google.j2objc.annotations;
     requires org.checkerframework.checker.qual;
-    // InventoryMenu 构建时经 adventure 把 legacy § 标题转为 Component（Paper 已过时 String 标题重载）
+    // InventoryMenu 标题直接持有 Component，异常信息经 adventure 以纯文本序列化（Paper 已过时 String 标题重载）
     requires net.kyori.adventure;
-    requires net.kyori.adventure.text.serializer.legacy;
+    requires net.kyori.adventure.text.serializer.plain;
+    // adventure-api 为自动模块，不传递 requires；Component 的父接口 Examinable 落在本模块，
+    // 调用 Component 成员（如 Component.empty()）时 javac 须解析它，显式声明才能进模块图
+    requires net.kyori.examination.api;
 
     // javac 拒绝导出空包；首个公共类落地时逐条启用：
     // inventoryMenu 公共面的回调签名引用 item 公共面的事件类型，item / item.event 须一并导出
